@@ -12,17 +12,26 @@ class App extends React.Component {
     }
 
   }
+  componentDidMount(){
+     $.get("http://127.0.0.1:1128/repos",(res)=>{
+        this.setState({repos: JSON.parse(res)});
+      })
+  }
 
   search (term) {
     console.log(`${term} was searched`);
-    // TODO
+    $.post("http://127.0.0.1:1128/repos", {data: term}, (res)=> {
+     $.get("http://127.0.0.1:1128/repos",(res)=>{
+        this.setState({repos: JSON.parse(res)});
+      })
+   })
   }
 
   render () {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
       <Search onSearch={this.search.bind(this)}/>
+      <RepoList repos={this.state.repos}/>
     </div>)
   }
 }
